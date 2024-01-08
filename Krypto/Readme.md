@@ -95,4 +95,20 @@
             - Rundenschlüssel generieren
 
 
-
+## Schlüsselübertragung
+- **Diffie-Hellmann**
+  - **Primitve Wurzel (hier) P**
+    - P mod 7 ist eine Zahl deren Potenzen, alle möglichen Reste von 1 bis 6 (7 - 1) erzeugt, also P^1 mod 7, P^n mod 7 etc..
+    - 3 ist eine primitve Wurzel von 7
+  - [How To] (Kommt maybe dran)
+    - Client und Server wählen Primzahl `p` und Primitiv Wurzel `g mod p`
+    - Client und Server wählen jeweils geheime Zahl `a` und `b`
+    - Public Key Gen
+      - Partei A: `A = g^a mod p`
+      - Partei B: `B = g^b mod p`
+    - Austausch der Pub Keys
+    - Private Key Gen
+      - Partei A: K = `B^a mod p`
+      - Partei B: K = `A^b mod p`
+      - **Private Key ist für beide gleich**
+- Verzicht auf Übertragung -> `Asymmetrische Kryptographie`
