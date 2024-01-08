@@ -1,0 +1,98 @@
+## **Kryptanalyse**:
+- Monogramme: Zählen wo welcher Buchstabe am Häufigsten ist z.B. Allg: E>N>I>S>R 
+    - -> Häufigkeit wird benutzt um Keys der Verschlüsselung rauszufinden
+- Bigramme: 2 Buchstaben die aufeinander folgen
+    -> Use info to crack Keys
+- Trigramme: 3 Buchstaben
+- Bruteforce
+
+
+
+##  **Symmetrische Kryptographie:**
+- ``Pro``
+  - Schnell | Hardware-Unterstützung mögl
+  - Moderne Verfahren sind sehr sicher
+- ``Con``
+  - **Schlüsselübertragung**
+
+
+- **Monoalphabetische Verfahren:**
+    - `Cäsar, ROT13`
+    - IMPROVEMENT
+      - turn similiar looking symbols into same (eg. I, l wird zu X)
+      - remove ["," | "." | ":"] and remove world length (eg. split word at randon length)
+    - XOR: (A XOR B) XOR B = A  (B is the key)
+      - Problem: 1 <= B <= 255 -> Simple Bruteforce
+    
+### **Polyaphabetische Kryptographie:**
+- **Vignere Verschlüsselung:**
+    - [How To]:
+        - Build Table where each row is shifted by 1 letter of alphabet
+        - Have Key (phrase) and Text to Encrypt, repeat key until its as long as text
+        - map Letter of Text to Letter of Key and look it up at the table at table[clearTextLetter][keyPhraseLetter] -> encryped letter
+    - **[Pro / Con]**:
+      - Len Key is important
+      - Len(K) >> Len(Text) machts anfällig für Bi-Trigramme
+
+### **Stromchiffren**: == Byte-weise verschlüsseln
+- **RC4**:
+    - S-Box mit 256 Values, initialized with Key
+    - crypt(Eingabe[i]) = Eingabe[i] XOR S[i]
+    - SBox wird Pseudo-Randomized each step
+    => Gleicher Pseudo-Random String bei Sender, Receiver
+    
+    **[RISKS]**:
+    - Known key = broken
+    - Same key for long time = ez to break
+    - Solution: Hash key with random val 
+
+### **Blockchiffren**:
+- **Concept: Blockwise encription [eg: 64Bit] or n*64 Bit padding**
+- ``Bsp: DES / 3DES | IDEA | AES``
+- [How To]:
+    - Split messages if msg > n Bit
+        - **Elcectronic Code Book Mode**
+            - Every Block independantly encrypted
+                - **Pro**: Errors only hits Error Blocks
+                - **Con**: Same Blocks same encrypted Blocks
+                
+        - **Cipher Block Chaining Mode**
+            - Like Electronic Code Book Mode but you encript Block i+1 with Block i
+                - **Pro**: Errors cascade through blocks, Same Input - -  Block -> Diff output Block
+                - **Con**: Cant be parallelized
+
+        - **Cipher Feedback Mode**
+            - Like Cipher Block Chaining Mode but:
+                - n bit aus Input Strom ersetzen n bit aus Key (no padding)
+                - => Block Chiffre als Strom Chiffre
+
+- **DES: Data Encryption Standard (USA, 1977)**
+    - Schlüssellänge DES: 64 Bit is split into 56 Bit (chosen by User) + 8 Bit parity
+    - Multiple Step encryption: [Permutation, halbieren, (multiple times), add all split parts (xor), permutations -> done ]
+
+- **IDEA: ETH Zürich (1990)**
+    - 128 Bit Key mit 64 Bit Blocks
+    - 8 Splits + 1-2 Ausgaberunden
+    - Komplexe Key gen
+
+- **AES: Advanced Encryption Standard**
+    - 128 Bit Blöcke
+    - Key Length 128, 160, 192, 224, 256 Bit (**192** und **256** zugelassen für **TOP SECRET US Documents**)
+    - Guter Hardware support
+    - Theoretisch gebrochen, praktisch unrealistisch => Sicher
+  
+    - [How To]
+        - Key expansion
+        - Rundenschlüssel generieren
+        - [Verschlüsselungsrunden (Anz. Keylen)]
+            - Substitute Bytes
+            - Shift Rows
+            - Mix Columns
+            - Rundenschlüssel generieren
+        - [Schlussrunde]
+            - SubBytes
+            - ShiftRows
+            - Rundenschlüssel generieren
+
+
+
