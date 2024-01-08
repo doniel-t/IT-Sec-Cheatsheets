@@ -141,3 +141,101 @@
   - **Why safe?**
     - Hard to calculate the 2 primes of Modul **n**
     - BUT easy to decrypt if someone has the private key d
+
+- **Hybride Verschlüsselung**
+- **Why?**
+  - Schlüsselaustausch symmetrisch ist org. aufwändig
+  - asymmetrisch ist rechenaufwendig
+- **Concept**
+  - Generate Random Session Key Sk
+  - Data is encrypted using Sk
+  - Sk is encrypted using receivers Public Key
+  - Receiver can decrypt Sk and with that Data
+
+## Integrität
+- Goal: Proof Message wasnt changed
+- Lösung Hash **ABER** Kollisionsgefahr
+- Relevant Hash Funktionen: SHA, SHA256, SHA512, MD5 (sadly)
+- **How to proof with Hashes?**
+  - Lösung **Signaturen**
+  - Send msg, and Signature (= hash msg) encrypted to receiver
+  - Receiver encrypts message, and Signatur -> hashes msg
+  - Integrität bestätigt wenn **hash(msg) == Signatur**
+- Use case (Password DB):
+  - Passwords are safed as hashes
+  - Salt (Zusatzwert pro Pw) added
+  - Pepper (Globaler Zusatzwert) added
+  - **Salt & Pepper increase security**
+
+## Authentizität
+- Goal: Proof Sender really is the Sender
+- example irl == Perso (trusted store(Staat) == Perso is real)
+- Solution: **Zertifikate**
+- trusted store: **Root-CA**
+- Signed cert or key (echtheit)
+
+## SSL / TLS
+- TLS is used **a LOT** HTTPS / OpenVPN / NTPS etc...
+- Goals: 
+  - Auth des Servers (und Clients)
+  - Integrität der Datenübertragung
+  - Trusted communication
+- Idea:
+  - Gen symmetrischen Key
+  - Tausch ihn asymmetrisch aus
+  - Kommunizier symmetrisch
+- **TLS Handshake**
+  - Schlüsselaustausch
+  - Auth
+    - [How To] (maybe still in Klausur)
+    - (Client) Client Hello -> (Server) Server Hello | Keyaustausch etc
+    - `Encrypted from now on`
+    - (Server sends:) Server-Cert, (ggf) Client Cert Req, ServerHello Done
+    - (Client sends:) (ggf) Client Cert, ClientHello Done + Daten
+- **TLS Record**
+  - Datenübertragung mit Vertraulichkeit, Integrität und Auth
+
+- **Perfect Forward Secrecy**
+  - Added in `TLS 1.3`
+  - **Before:**
+    - Session Key encrypted via Pub Key
+    - Risk: Private Key loss = all pakets are readable
+    - Heartbleed Attack
+  - **After:**
+    - Session Key secure via Key Transmition method
+    - Private Key independant
+    - 
+- **Session Resumption**
+- 0 Round Trips instead of 1
+- Safes ~4% CPU time
+- No Perfect Forward Secrecy (Recommended: reset Session every 24hrs)
+  
+- **Improving TLS Security**
+  - TLS can fall victim to Man in the Middle attacks while generating RSA Export Key
+  - Solution: **Paketanalyse durch NIDS** (Network Intrusion Detection System) **ABER** Pakete sind Verschlüsselt
+    - Solution: Enterprise TLS
+    - Local Server | NIDS | [PC1, PC2 ... PCn]
+    - eTLS zu NIDS mit gleichem Key -> NIDS kann mitlesen, TLS zu PCs
+    - `Pro & Con`
+      - RIP Forward secrecy
+      - Monitoring des Netzwerktraffics mögl
+      - Datenschutz? Geheimschutz?
+
+- **Alt. HTTPS Proxy**
+- Same concept but uses Proxy Cert on Clients
+- trustworthy
+- Web-Server | (Internet) | Proxy | Local Network (Clients with Proxy Cert)
+- Proxy TLS with Web-Server, Clients TLS with Proxy
+- **Important:** **`Proxy can scan Pakets`**
+- `Pro / Con`
+  - Needs proxy abled protocol
+  - Verschlüsselung hinfällig, wenn Proxy kompromittiert
+  - Datenschutz? Geheimschutz?
+
+- **Heartbleed**
+- OpenSSL 1.0.1 bis 1.0.1f betroffen
+- Attack on Heart-Beat-Function of TLS/SSL
+- Could read **any** Data on Server (eg. SSL secret keys -> allowed to read old and new messages)
+- Why did it work?
+  - OpenSSL trusted the payload_length header which didnt have to be the true size
+  - Example in Heartbeat message: Attacker set payload_length, like this "Server are you still there? If so, reply "Bing Chilling" (payload_length = 500) -> Server replies "Bing Chilling + [ 486 chars of SENSITIVE DATA]"
