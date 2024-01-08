@@ -1,14 +1,14 @@
-## **Kryptanalyse**:
-- Monogramme: Zählen wo welcher Buchstabe am Häufigsten ist z.B. Allg: E>N>I>S>R 
+## **`Kryptanalyse`**:
+- **Monogramme**: Zählen wo welcher Buchstabe am Häufigsten ist z.B. Allg: E>N>I>S>R 
     - -> Häufigkeit wird benutzt um Keys der Verschlüsselung rauszufinden
-- Bigramme: 2 Buchstaben die aufeinander folgen
+- **Bigramme**: 2 Buchstaben die aufeinander folgen
     -> Use info to crack Keys
-- Trigramme: 3 Buchstaben
-- Bruteforce
+- **Trigramme**: 3 Buchstaben
+- **Bruteforce**
 
 
 
-##  **Symmetrische Kryptographie:**
+##  **`Symmetrische Kryptographie:`**
 - ``Pro``
   - Schnell | Hardware-Unterstützung mögl
   - Moderne Verfahren sind sehr sicher
@@ -16,15 +16,16 @@
   - **Schlüsselübertragung**
 
 
-### **Monoalphabetische Verfahren:**
+### **`Monoalphabetische Verfahren:`**
 - `Cäsar, ROT13`
-- IMPROVEMENT
+- **IMPROVEMENT:**
   - turn similiar looking symbols into same (eg. I, l wird zu X)
   - remove ["," | "." | ":"] and remove world length (eg. split word at randon length)
-- XOR: (A XOR B) XOR B = A  (B is the key)
+- **XOR**: (A XOR B) XOR B = A  (B is the key)
   - Problem: 1 <= B <= 255 -> Simple Bruteforce
     
-### **Polyaphabetische Kryptographie:**
+### **`Polyaphabetische Kryptographie:`**
+
 - **Vignere Verschlüsselung:**
     - [How To]:
         - Build Table where each row is shifted by 1 letter of alphabet
@@ -34,7 +35,7 @@
       - Len Key is important
       - Len(K) >> Len(Text) machts anfällig für Bi-Trigramme
 
-### **Stromchiffren**: == Byte-weise verschlüsseln
+### **`Stromchiffren`**: == Byte-weise verschlüsseln
 - **RC4**:
     - S-Box mit 256 Values, initialized with Key
     - crypt(Eingabe[i]) = Eingabe[i] XOR S[i]
@@ -46,7 +47,7 @@
     - Same key for long time = ez to break
     - Solution: Hash key with random val 
 
-### **Blockchiffren**:
+### **`Blockchiffren`**:
 - **Concept: Blockwise encription [eg: 64Bit] or n*64 Bit padding**
 - ``Bsp: DES / 3DES | IDEA | AES``
 - [How To]:
@@ -66,16 +67,16 @@
                 - n bit aus Input Strom ersetzen n bit aus Key (no padding)
                 - => Block Chiffre als Strom Chiffre
 
-- **DES: Data Encryption Standard (USA, 1977)**
+- **`DES: Data Encryption Standard (USA, 1977)`**
     - Schlüssellänge DES: 64 Bit is split into 56 Bit (chosen by User) + 8 Bit parity
     - Multiple Step encryption: [Permutation, halbieren, (multiple times), add all split parts (xor), permutations -> done ]
 
-- **IDEA: ETH Zürich (1990)**
+- **`IDEA: ETH Zürich (1990)`**
     - 128 Bit Key mit 64 Bit Blocks
     - 8 Splits + 1-2 Ausgaberunden
     - Komplexe Key gen
 
-- **AES: Advanced Encryption Standard**
+- **`AES: Advanced Encryption Standard`**
     - 128 Bit Blöcke
     - Key Length 128, 160, 192, 224, 256 Bit (**192** und **256** zugelassen für **TOP SECRET US Documents**)
     - Guter Hardware support
@@ -95,8 +96,8 @@
             - Rundenschlüssel generieren
 
 
-## Schlüsselübertragung
-- **Diffie-Hellmann**
+## `Schlüsselübertragung`
+- **`Diffie-Hellmann`**
   - **Primitve Wurzel (hier) P**
     - P mod 7 ist eine Zahl deren Potenzen, alle möglichen Reste von 1 bis 6 (7 - 1) erzeugt, also P^1 mod 7, P^n mod 7 etc..
     - 3 ist eine primitve Wurzel von 7
@@ -114,7 +115,7 @@
 - Verzicht auf Übertragung -> `Asymmetrische Kryptographie`
 
 
-## Asymmetrische Kryptographie
+## `Asymmetrische Kryptographie`
 - Everyone has (different) Public and Private Key
 - Public Keys encrypt everyones Data **only** owner of private Key can decrypt
 - `Pro`
@@ -131,7 +132,7 @@
   - A gives B encrypted Sa, B can decrypt it -> A can send secret messages to B
   - => established secure way to msg
 
-- **RSA**
+- **`RSA`**
   - Uses Public and Private Keys
   - Basiert auf **Primfaktorzerlegung**
   - Big Primes = more secure
@@ -142,7 +143,7 @@
     - Hard to calculate the 2 primes of Modul **n**
     - BUT easy to decrypt if someone has the private key d
 
-- **Hybride Verschlüsselung**
+- **`Hybride Verschlüsselung`**
 - **Why?**
   - Schlüsselaustausch symmetrisch ist org. aufwändig
   - asymmetrisch ist rechenaufwendig
@@ -152,7 +153,7 @@
   - Sk is encrypted using receivers Public Key
   - Receiver can decrypt Sk and with that Data
 
-## Integrität
+## `Integrität`
 - Goal: Proof Message wasnt changed
 - Lösung Hash **ABER** Kollisionsgefahr
 - Relevant Hash Funktionen: SHA, SHA256, SHA512, MD5 (sadly)
@@ -167,14 +168,14 @@
   - Pepper (Globaler Zusatzwert) added
   - **Salt & Pepper increase security**
 
-## Authentizität
+## `Authentizität`
 - Goal: Proof Sender really is the Sender
 - example irl == Perso (trusted store(Staat) == Perso is real)
 - Solution: **Zertifikate**
 - trusted store: **Root-CA**
 - Signed cert or key (echtheit)
 
-## SSL / TLS
+## `SSL / TLS`
 - TLS is used **a LOT** HTTPS / OpenVPN / NTPS etc...
 - Goals: 
   - Auth des Servers (und Clients)
@@ -210,7 +211,7 @@
 - Safes ~4% CPU time
 - No Perfect Forward Secrecy (Recommended: reset Session every 24hrs)
   
-- **Improving TLS Security**
+- **`Improving TLS Security`**
   - TLS can fall victim to Man in the Middle attacks while generating RSA Export Key
   - Solution: **Paketanalyse durch NIDS** (Network Intrusion Detection System) **ABER** Pakete sind Verschlüsselt
     - Solution: Enterprise TLS
@@ -221,7 +222,7 @@
       - Monitoring des Netzwerktraffics mögl
       - Datenschutz? Geheimschutz?
 
-- **Alt. HTTPS Proxy**
+- **`Alt. HTTPS Proxy`**
 - Same concept but uses Proxy Cert on Clients
 - trustworthy
 - Web-Server | (Internet) | Proxy | Local Network (Clients with Proxy Cert)
@@ -232,7 +233,7 @@
   - Verschlüsselung hinfällig, wenn Proxy kompromittiert
   - Datenschutz? Geheimschutz?
 
-- **Heartbleed**
+- **`Heartbleed`**
 - OpenSSL 1.0.1 bis 1.0.1f betroffen
 - Attack on Heart-Beat-Function of TLS/SSL
 - Could read **any** Data on Server (eg. SSL secret keys -> allowed to read old and new messages)
