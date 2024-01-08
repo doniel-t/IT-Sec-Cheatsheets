@@ -16,13 +16,13 @@
   - **Schlüsselübertragung**
 
 
-- **Monoalphabetische Verfahren:**
-    - `Cäsar, ROT13`
-    - IMPROVEMENT
-      - turn similiar looking symbols into same (eg. I, l wird zu X)
-      - remove ["," | "." | ":"] and remove world length (eg. split word at randon length)
-    - XOR: (A XOR B) XOR B = A  (B is the key)
-      - Problem: 1 <= B <= 255 -> Simple Bruteforce
+### **Monoalphabetische Verfahren:**
+- `Cäsar, ROT13`
+- IMPROVEMENT
+  - turn similiar looking symbols into same (eg. I, l wird zu X)
+  - remove ["," | "." | ":"] and remove world length (eg. split word at randon length)
+- XOR: (A XOR B) XOR B = A  (B is the key)
+  - Problem: 1 <= B <= 255 -> Simple Bruteforce
     
 ### **Polyaphabetische Kryptographie:**
 - **Vignere Verschlüsselung:**
