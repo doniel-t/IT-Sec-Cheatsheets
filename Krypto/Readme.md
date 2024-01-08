@@ -112,3 +112,32 @@
       - Partei B: K = `A^b mod p`
       - **Private Key ist für beide gleich**
 - Verzicht auf Übertragung -> `Asymmetrische Kryptographie`
+
+
+## Asymmetrische Kryptographie
+- Everyone has (different) Public and Private Key
+- Public Keys encrypt everyones Data **only** owner of private Key can decrypt
+- `Pro`
+  - ez key transmition
+- `Con`
+  - Calculations more expensive than symmetrical
+  - Need for longer keys (if u want same security)
+
+- **Concept**
+  - Partei A: Has **Pa (Public Key a)** and **Sa (Secret/Private Key a)**
+  - Partei B: Has **Pb (Public Key b)** and **Sb (Secret/Private Key b)**
+  - B gives A Pb
+  - A encrypts Sa with Pb
+  - A gives B encrypted Sa, B can decrypt it -> A can send secret messages to B
+  - => established secure way to msg
+
+- **RSA**
+  - Uses Public and Private Keys
+  - Basiert auf **Primfaktorzerlegung**
+  - Big Primes = more secure
+  - Public Key has 2 Parts: Exponent e und Modul n
+    - e is known and *n* = product of *2 large primes*
+  - Private Key: Exponent d which is calculated to encrypt
+  - **Why safe?**
+    - Hard to calculate the 2 primes of Modul **n**
+    - BUT easy to decrypt if someone has the private key d
