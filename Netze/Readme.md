@@ -358,7 +358,7 @@
     - `Honeypot / Teergrube`
       - Fake open Ports / Services
         - **Honeypot**: To observe Attacker
-        - **Teergrube**: Stören / Behindern / Blockieren
+        - **Teergrube**: Als Köder benutzen um Angreifer zu Stören / Behindern / Blockieren 
     
   ### `Proxy` (Application Layer Firewall)
   - Usecases: 
