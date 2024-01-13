@@ -16,7 +16,85 @@
     - Security by complexity
 - **Datenübertragung**
 - **Verfügbarkeit**
-  - DDOS / DOS
+  - Denial of Service
+- **Manipulieren**
+  - Man In The Middle Attack durch
+    - ARP / DNS-Spoofing
+    - Proxy
+  - Angriffe auf Anwendungen
+    - Cross-Site Scripting
+- **Unterdrücken / Stören**
+  - Technische Störmaßnahme
+  - DoS (Denial of Service)
+    - "Einzelner Absturz" durch:
+      - Programmabsturz
+      - Routing-Angriffe
+      - Ping of Death 
+  - DDoS (Distributed Denial of Service)
+    - `SYN-Flooding`
+    - Also uses: `IP-Spoofing`
+    - DNS-Amplification
+      - Small Request -> Big Response (Verstärkungsfaktor)
+      - Durch Spoofed-IP is Attack Source (Netzwerküberlastung dort)
+        - Make target Spoofed-IP
+      - DNSSEC / EDNS verstärkt attack (more Data) 
+    - `Smurf-Angriff`
+      - Ping von Opfer-IP UND an Broadcast-Adresse eines Netzwerks
+      - Every PC answers -> BOMBA
+    - `Gegenmaßnahme`
+      - SYN-Cookie
+        - Spart: Verbindungstabelle
+        - **ABER:** Verzögert DDoS nur
+      - Rate-Limit für TCP und ICMP-Pakete
+        - Can deny legit requests (but still worth)
+      - Load-Balancing
+      - "Cloud Computing" (Have services hosted in cloud - eg. AWS, Vercel, Google Cloud)
+    - `Alternative "DoS" Angriffe`
+      - `Ping of Death`:
+        - Manipuliertes fragmentiertes ICMP Echo Paket > 64KB
+          - Server wants to Echo with (impossible) Paket and crashes
+        - Bomba (Absturz)
+      - `WinNuke`
+        - Win95, Win NT, Win3.11 / 3.10 had vulnearability in NetBIOS
+        - Send Paket with Port: 139 TCP with URG-Flag
+          - Dies
+      - `TearDrop`
+        - TCP-Paket mit negativer Fragmentlänge
+          - Crash be Re-Assembly
+      - `Land Angriff`
+        - Fake IP-Paket where Goal AND Source Adress = target IP
+        - Set SYN Flag
+        - Sends infinite Pakets to himself because of SYN/ACK - SYN loop
+      - `TR-069`
+        - Shell Injection in DSL Router because of vulnearability of their remote config system
+        - Geringer Schaden, weil Telekom-Speedport Router unter eigenem OS liefen (shellcode didnt execute)
+        - ABER Router still crashed because it got overloaded lmao
+      - `Shell Injection`
+        - Execute Shell commands in running programms
+          - **`ALWAYS SANITIZE AND CHECK USER INPUTS`**
+- **Belauschen**
+  - `Sniffen`
+    - **Wireshark**
+  - `ARP-Poisoning`
+    - Same as ARP Spoofing (mappes wrong IP to MAP on ARP request)
+      - "Wrong IP" can now listen into it
+    - can use **etercap**
+    - `Gegenmaßnahme`
+      - Statisches ARP
+      - Port Überwachung am Switch
+      - Verschlüsselung
+      - Steganographie
+  - DNS-Poisoning
+    - Fucks with DNS Servers cache to setup wrong DNS response 
+    - Goal: Legitime DNS Anträge auf hostile Websiten umzuleiten
+    - **Gegenmaßnahme:**
+      - Ignoriere "Zufallspakete"
+      - Guessing
+      - DNSSEC - kryptographisch abgesichert
+        - Adds Public-Private-Key Signature (DNS Messages > 512 Byte)
+      - DNSCurve
+  - Man in the Middle
+
 
 ## **`Einstieg finden`**
 - Erreichbarkeit
@@ -219,7 +297,177 @@
       - Solution: Timeouts **ABER** Verbindungsabbruch
         - Solution: `Keep-Alive` / `tcp_keepalive_time`
 
-    - Mindestregel
-    - iptables
-    - Test mit Portscan
-    - Transparent Proxy 
+    - `SMTP`, `IMAP` `POP3` beschränken + HTTP-Zwangs-Proxy
+    - **`SEGMENTIERUNG`**
+      - Es ist so sinnvoll das interne Netzwerk in Logische Segmente durch firewalls einzuteilen
+      - Aufbau: Internet | Firewall | DMZ | Firewall | n "logische Segmente" mit jeweils Firewall vor sich
+      - `Pro:` Durch verschiedene Firewalls, verschiedene Angriffslücken -> Angriff aufwendiger
+    - `DEDICATED FIREWALL BLEIBT FIREWALL **ONLY**`
+      - ABER Services wie Webserver, Mailserver etc können eine extra Firewall haben (schadet nicht)
+
+    - `iptables`
+      - Benutzt **"chains"** (rule chaining) um Pakete "local am Rechner" zu filtern
+        - [HOW TO]
+          - Chains
+            - Input
+            - Output
+            - Forward
+            - Prerouting
+            - Postrouting
+          - Targets
+            - DROP
+            - REJECT
+            - ACCEPT
+            - DNAT
+            - SNAT
+            - LOG
+            - MASQUERADE
+            - TPROXY
+  
+    - `OpenBSD`
+      - TCP-SYN-Proxy gegen TCP-SYN-Flooding
+      - Passive OS fingerprinting
+      - FTP Proxy
+      - `Pro:`
+        - Very strong
+        - Ez config
+  
+    - `Firewalling von IPv6 (vs IPv4)`
+      - `ICMPv4`
+        - "Optional"
+        - Ping, Traceroute
+        - Fehlermeldungen
+        - `wird häufig komplett gefiltert`
+      - `ICMPv6`
+        - Neighbour discovery === ARP aus IPv4
+        - Router Ad | Path MTU Discovery | Mobile IPv6
+        - `DO NOT FILTER ICMPv6`
+      - `Multicast` IPv6 (Besseres Broadcast von IPv4)
+        - Verstärkt DoS
+        - `Ratelimit Multicast (or Filter)`
+      - `Extension Header?`
+        - can be used for infinite possible scenarios
+        - `Check if header is plausible also check content of header`
+      - `Hop-By-Hop`
+        - Padding possible
+        - `check padding`
+      - `Fragmentation`
+        - Can bypass IDS
+        - `use (virtual) Fragment Reassembly (fix Fragments and check if fine)`
+    
+    - `Honeypot / Teergrube`
+      - Fake open Ports / Services
+        - **Honeypot**: To observe Attacker
+        - **Teergrube**: Stören / Behindern / Blockieren
+    
+  ### `Proxy` (Application Layer Firewall)
+  - Usecases: 
+    - Proxy with content filter
+    - checks application data
+    - stops (simple) tunnels
+  
+  - `Forward Proxy`
+    - Proxy kontrolliert, überwacht und filtert den Datenfluss
+    - Proxy Server is in clients network
+    - Client sends request to Server
+    - Actually client sends request to Proxy server, who then forwards it to the wanted server
+    - Proxy recieves answer, checks it and then forwards it back to the client
+ 
+  - `Reverse Proxy`
+    - Proxy sits infront of server instead of client
+    - Otherwise same function as forward Proxy
+  
+  - `Transparent Proxy`
+    - "Transparent btw" user doesnt know proxy is there
+    - Setup: Firewall redirects requests to proxy first and proxy forwards it
+  
+  - `Bridge Proxy`
+    - Technisch aufwendig
+    - Completely "transparent"
+ 
+  - `Web-Content-Filter`
+    - Jugendschutz
+    - Werbefilter
+    - Zensur
+    - Malware Schutz
+    - `Anti-Virus-Proxy`
+      - `Squid`
+        - ClamAV (server) is a Proxy, that checks URL for malware first
+        - If ok requester gets the ok and bypasses ClamAV to answer instantly to server
+        - `Pro:`
+          - very generic
+          - very flexible
+        - `Con:`
+          - Complex Setup
+          - loads twice
+      - `DansGuardian`
+        - Content Filter (Viren, Jugendschutz etc..)
+        - Daisy Chaining with Squit (add to squid)
+          - Setup: Client -> Dans Guardian -> Squid -> Web -> Server 
+
+- `NAT`
+  - Router as seperation of Internet and local Network
+  - Router "spins up" new IP Adresse Range in local Network 
+  - Router has public IP to internet and forwards messages to corresponding pc in local network based on given Port
+
+
+## Tunneling (VPN)
+- Concepts
+  - Variant A: Use other protocol port
+  - Variant B: Make requests look like other protocol
+  - Variant C: Verpacke wie IPSec, IPv4 in IPv6 etc
+  
+- **Possible Tunnels**:
+  - Can do everything `BESIDES` `IPv6 in Tunnel IPv6` 
+  - `IPSec`
+  - IPv4 in IPv4 Tunnel
+  - IPv6 in IPv4 Tunnel
+  - IPv4 in IPv6 Tunnel
+  - VPN = Virtual Private Network
+
+- `How it works`
+  - "Simulates private network"
+  - VPN Client (runs on Client PC) has virtual Network-card
+  - VPN Client send paket to VPN Server
+  - VPN Server distributes paket to desired client
+
+- `VPN mit IPSec`
+  - `Transportmodus`
+    - Genutzt zwischen Endgeräten für End-To-End-Sicherheit
+    - Sicherheitsdienste werden nur auf den Payload angewendet
+    - Ursprünglicher IP Header bleibt gleich
+  - `Tunnelmodus`
+    - Flexibler als Transport Modus
+    - Tunnel durch unsichere Netze
+    - Üblich bei Routern, Netzwerkgateways
+    - Gesamte IP-Datenverkehr wird verschlüssel / signiert
+    - Adds new IP Header
+
+  - `Möglichkeiten`
+    - `AH - Authentication Header`
+      - Wird zwischen IP Header und Payload geadded
+      - Enthält infos über: Integrität, Authentizität, Checksums etc
+      - `KEINE VERSCHLÜSSELUNG`
+      - `Transportmodus`  
+        - `Pro:`
+          - Low Overhead
+          - Fälschungssicher
+          - Sicher gegen Replay Angriffe
+        - `Con:`
+          - NAT: Goal- and Source-IP changed
+          - Port-Translation: Goal-Port changed
+
+    - `ESP - Encapsulated Security Payload`
+      - `Verschlüsselung + Echtheit`
+      - `Transportmodus`
+        - Encapsulates only TCP Header and TCP Payload
+      - `Tunnelmodus`
+        - Encapsulates **complete** olld Paket
+
+    - `Weiter Varianten`
+      - Wireguard (UDP)
+      - OpenVPN (TLS über UDP oder TCP)
+
+    - `DNS Tunnel`
+      - Uses DNS as a way to let Client and Server communicate
+  - 
