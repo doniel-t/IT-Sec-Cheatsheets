@@ -76,7 +76,7 @@
   - `Sniffen`
     - **Wireshark**
   - `ARP-Poisoning`
-    - Same as ARP Spoofing (mappes wrong IP to MAP on ARP request)
+    - Same as ARP Spoofing (mappes wrong IP to MAC on ARP request)
       - "Wrong IP" can now listen into it
     - can use **etercap**
     - `Gegenmaßnahme`
