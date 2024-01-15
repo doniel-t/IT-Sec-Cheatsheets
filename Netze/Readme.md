@@ -433,10 +433,12 @@
 
 - `VPN mit IPSec`
   - `Transportmodus`
+    - `Client to Client Tunnel`
     - Genutzt zwischen Endgeräten für End-To-End-Sicherheit
     - Sicherheitsdienste werden nur auf den Payload angewendet
     - Ursprünglicher IP Header bleibt gleich
   - `Tunnelmodus`
+    - `Gateway to Gateway Tunnel`
     - Flexibler als Transport Modus
     - Tunnel durch unsichere Netze
     - Üblich bei Routern, Netzwerkgateways
